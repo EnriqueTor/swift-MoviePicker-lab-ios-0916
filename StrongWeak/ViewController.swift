@@ -11,25 +11,25 @@ import SceneKit
 
 class ViewController: UIViewController {
     
-    var button: UIButton!
-    var movieLabels: [UILabel]!
-    var thankYouLabel: UILabel!
-    var movieImageView: UIImageView!
+    var button: UIButton! //ok
+    var movieLabels: [UILabel]! //ok
+    var thankYouLabel: UILabel! //ok
+    var movieImageView: UIImageView! //ok
     
-    @IBOutlet weak var movieLabelOne: UILabel!
-    @IBOutlet weak var movieLabelTwo: UILabel!
-    @IBOutlet weak var movieLabelThree: UILabel!
-    @IBOutlet weak var movieLabelFour: UILabel!
+    @IBOutlet weak var movieLabelOne: UILabel! //ok
+    @IBOutlet weak var movieLabelTwo: UILabel! //ok
+    @IBOutlet weak var movieLabelThree: UILabel! //ok
+    @IBOutlet weak var movieLabelFour: UILabel! //ok
     
     
     override func viewDidLoad() {
         
-        super.viewDidLoad()
-        view.backgroundColor = UIColor(red:0.14, green:0.10, blue:0.36, alpha:1.00)
-        movieLabels = [movieLabelOne, movieLabelTwo, movieLabelThree ,movieLabelFour]
-        createButton()
-        createThankYouLabel()
-        createMovieImageView()
+        super.viewDidLoad() //ok
+        view.backgroundColor = UIColor(red:0.14, green:0.10, blue:0.36, alpha:1.00) //ok
+        movieLabels = [movieLabelOne, movieLabelTwo, movieLabelThree ,movieLabelFour] //ok
+        createButton() //ok
+        createThankYouLabel() //ok
+        createMovieImageView() //ok
         
     }
     
@@ -43,7 +43,7 @@ extension ViewController {
         
         for label in movieLabels {
             if button.frame.intersects(label.frame) {
-                fadeOutLabels()
+                fadeOutLabels() //ok
                 searchFilm(label.text!)
                 break
             }
@@ -51,18 +51,18 @@ extension ViewController {
         
     }
     
-    func movingView(sender: UIPanGestureRecognizer) {
+    func movingView(sender: UIPanGestureRecognizer) { //ok
         
-        let center = sender.location(in: view)
-        button.center = center
+        let center = sender.location(in: view) //ok
+        button.center = center //ok
         
     }
     
-    func fadeOutLabels() {
+    func fadeOutLabels() { //ok
         
-        movieLabels.forEach { label in
-            UIView.animate(withDuration: 0.8) { _ in
-                label.alpha = 0.0
+        movieLabels.forEach { label in //ok
+            UIView.animate(withDuration: 0.8) { _ in //ok
+                label.alpha = 0.0 //ok
             }
         }
         
@@ -72,7 +72,7 @@ extension ViewController {
         
         movieImageView.image = image
         
-        UIView.animate(withDuration: 3.5, delay: 0.0, options: [], animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: [], animations: {
             
             self.movieImageView.alpha = 1.0
             self.thankYouLabel.alpha = 1.0
@@ -109,9 +109,13 @@ extension ViewController {
             
             let posterURL = URL(string: posterString)!
             
-            self.button.isHidden = true
-            
-            self.downloadImage(at: posterURL)
+            OperationQueue.main.addOperation {
+                
+                self.button.isHidden = true
+                
+                self.downloadImage(at: posterURL)
+                
+            }
             
             }.resume()
     }
@@ -128,7 +132,11 @@ extension ViewController {
             
             let image = UIImage(data: imageData)!
             
-            self.display(image: image)
+            OperationQueue.main.addOperation {
+                
+                self.display(image: image)
+                
+            }
             
             }.resume()
     }
@@ -140,77 +148,77 @@ extension ViewController {
 // MARK: - Creation
 extension ViewController {
     
-    func createButton() {
+    func createButton() { //ok
         
-        let frame = createSquareFrame(withSide: 100)
-        button = UIButton(type: .system)
-        button.frame = frame
-        button.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
-        button.layer.cornerRadius = frame.size.height / 2
-        button.clipsToBounds = true
-        view.addSubview(button)
-        button.backgroundColor = UIColor.red.withAlphaComponent(0.6)
-        createGestureRecognizer()
-        
-    }
-    
-    func createThankYouLabel() {
-        
-        thankYouLabel = UILabel()
-        thankYouLabel.font = UIFont(name: "AvenirNext-DemiBold", size: 38.0)
-        thankYouLabel.textColor = UIColor.white
-        thankYouLabel.text = "Thanks Laura! 🎉"
-        thankYouLabel.alpha = 0.0
-        thankYouLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(thankYouLabel)
-        thankYouLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        thankYouLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 50.0).isActive = true
+        let frame = createSquareFrame(withSide: 100) //ok
+        button = UIButton(type: .system) //ok
+        button.frame = frame //ok
+        button.addTarget(self, action: #selector(handleTap), for: .touchUpInside) //ok
+        button.layer.cornerRadius = frame.size.height / 2 //ok
+        button.clipsToBounds = true //ok
+        view.addSubview(button) //ok
+        button.backgroundColor = UIColor.red.withAlphaComponent(0.6) //ok
+        createGestureRecognizer() //ok
         
     }
     
-    func createMovieImageView() {
+    func createThankYouLabel() { //ok
         
-        let height = view.frame.size.height * 0.4
-        let width = (300 / 461) * height
-        let origin = randomXandY(height: height, width: width)
-        let frame = CGRect(x: origin.x, y: origin.y, width: width, height: height)
-        
-        movieImageView = UIImageView(frame: frame)
-        view.addSubview(movieImageView)
-        movieImageView.contentMode = .scaleAspectFill
-        movieImageView.clipsToBounds = true
-        movieImageView.alpha = 0.0
-        
-    }
-    
-    func createSquareFrame(withSide side: CGFloat) -> CGRect {
-        
-        let height = side
-        let width = side
-        let y = (view.frame.size.height / 2) - (side / 2)
-        let x = (view.frame.size.width / 2) - (side / 2)
-        return CGRect(x: x, y: y, width: width, height: height)
+        thankYouLabel = UILabel() //ok
+        thankYouLabel.font = UIFont(name: "AvenirNext-DemiBold", size: 38.0) //ok
+        thankYouLabel.textColor = UIColor.white //ok
+        thankYouLabel.text = "Thanks Laura! 🎉" //ok
+        thankYouLabel.alpha = 0.0 //ok
+        thankYouLabel.translatesAutoresizingMaskIntoConstraints = false //ok
+        view.addSubview(thankYouLabel) //ok
+        thankYouLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true //ok
+        thankYouLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 50.0).isActive = true //ok
         
     }
     
-    func createGestureRecognizer() {
+    func createMovieImageView() { //ok
         
-        let gesture = UIPanGestureRecognizer(target: self, action: #selector(movingView))
-        button.addGestureRecognizer(gesture)
+        let height = view.frame.size.height * 0.4 //ok
+        let width = (300 / 461) * height //ok
+        let origin = randomXandY(height: height, width: width) //ok
+        let frame = CGRect(x: origin.x, y: origin.y, width: width, height: height) //ok
+        
+        movieImageView = UIImageView(frame: frame) //ok
+        view.addSubview(movieImageView) //ok
+        movieImageView.contentMode = .scaleAspectFill //ok
+        movieImageView.clipsToBounds = true //ok
+        movieImageView.alpha = 0.0 //ok
         
     }
     
-    func randomXandY(height: CGFloat, width: CGFloat) -> (x: CGFloat, y: CGFloat) {
+    func createSquareFrame(withSide side: CGFloat) -> CGRect { //ok
         
-        let minX = 0 + (width / 2)
-        let maxX = view.frame.size.width - (width)
-        let minY = 0 + (height / 2)
-        let maxY = view.frame.size.height - (height)
+        let height = side //ok
+        let width = side //ok
+        let y = (view.frame.size.height / 2) - (side / 2) //ok
+        let x = (view.frame.size.width / 2) - (side / 2) //ok
+        return CGRect(x: x, y: y, width: width, height: height) //ok
         
-        let x = CGFloat(arc4random_uniform(UInt32(maxX - minX))) + minX
-        let y = CGFloat(arc4random_uniform(UInt32(maxY - minY))) + minY
+    }
+    
+    func createGestureRecognizer() { //ok
         
-        return (x, y)
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(movingView)) //ok
+        button.addGestureRecognizer(gesture) //ok
+        
+    }
+    
+    func randomXandY(height: CGFloat, width: CGFloat) -> (x: CGFloat, y: CGFloat) { //ok
+        
+        let minX = 0 + (width / 2) //ok
+        let maxX = view.frame.size.width - (width) //ok
+        let minY = 0 + (height / 2) //ok
+        let maxY = view.frame.size.height - (height) //ok
+        
+        let x = CGFloat(arc4random_uniform(UInt32(maxX - minX))) + minX //ok
+        let y = CGFloat(arc4random_uniform(UInt32(maxY - minY))) + minY //ok
+        
+        return (x, y) //ok
         
     }
     
